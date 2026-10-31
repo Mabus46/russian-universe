@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B1020">
+<title>Русская вселенная — цифровая экосистема</title>
+<meta name="description" content="Русская вселенная — прототип цифровой экосистемы: ИИ-ассистенты, слободы, образование, экономика «Лад», сообщество и здоровье.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ================= ЛЕВОЕ МЕНЮ (десктоп) ================= -->
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#/home" data-link>
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 40 40" width="34" height="34">
+          <defs><linearGradient id="bm" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#F3D68B"/><stop offset="1" stop-color="#C99A2E"/></linearGradient></defs>
+          <circle cx="20" cy="20" r="18" fill="none" stroke="url(#bm)" stroke-width="1.6" opacity=".7"/>
+          <path d="M20 6 L23.4 16.6 L34 20 L23.4 23.4 L20 34 L16.6 23.4 L6 20 L16.6 16.6 Z" fill="url(#bm)"/>
+          <circle cx="20" cy="20" r="3.2" fill="#0B1020"/>
+        </svg>
+      </span>
+      <span class="brand__text">
+        <span class="brand__title">Русская вселенная</span>
+        <span class="brand__sub">цифровая экосистема</span>
+      </span>
+    </a>
+
+    <nav class="nav" id="nav-desktop" aria-label="Разделы платформы"></nav>
+
+    <div class="sidebar__foot">
+      <div class="badge-line">
+        <span class="dot dot--ok"></span>
+        <span id="env-label">Демо-контур · данные локальные</span>
+      </div>
+      <button class="btn btn--ghost btn--sm btn--block" data-action="open-ethics">Этика и данные</button>
+    </div>
+  </aside>
+
+  <!-- ================= ОСНОВНАЯ ЧАСТЬ ================= -->
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn only-mobile" id="menu-btn" aria-label="Меню">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="topbar__title" id="page-title">Главная</div>
+
+      <div class="topbar__right">
+        <div class="wallet" id="wallet" title="Баланс токенов «Лад» и уровень вклада">
+          <span class="wallet__coin" aria-hidden="true">Л</span>
+          <span class="wallet__value" id="wallet-lad">0</span>
+          <span class="wallet__sep"></span>
+          <span class="wallet__lvl" id="wallet-lvl">Ур. 1</span>
+        </div>
+        <button class="avatar" id="profile-btn" aria-label="Профиль" title="Профиль">
+          <span id="profile-initial">Г</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="view" id="view" role="main" aria-live="polite"></main>
+  </div>
+
+  <!-- ================= НИЖНЕЕ МЕНЮ (мобильные) ================= -->
+  <nav class="tabbar" id="tabbar" aria-label="Основная навигация"></nav>
+
+  <div id="overlay" class="overlay" aria-hidden="true"></div>
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+</div>
+
+<noscript>
+  <div style="padding:40px;font-family:sans-serif;color:#eaf0ff;background:#0b1020;min-height:100vh">
+    Для прототипа «Русской вселенной» нужен включённый JavaScript. Включите его и обновите страницу.
+  </div>
+</noscript>
+
+<script src="js/data/demo.js"></script>
+<script src="js/core.js"></script>
+<script src="js/views/home.js"></script>
+<script src="js/views/assistant.js"></script>
+<script src="js/views/tree.js"></script>
+<script src="js/views/slobody.js"></script>
+<script src="js/views/market.js"></script>
+<script src="js/views/edu.js"></script>
+<script src="js/views/community.js"></script>
+<script src="js/views/more.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
