@@ -230,12 +230,14 @@ Views.shield = function () {
     var input = h('input', { type: 'checkbox' });
     input.checked = !!s.shield[key];
     input.addEventListener('change', function () {
+      var next = input.checked;                 /* что хотел сделать родитель */
+      input.checked = !!Store.get().shield[key]; /* до подтверждения показываем текущее значение */
       askParentPin(function () {
-        Store.biz(function (st) { st.shield[key] = input.checked; });
-        toast(label + ': ' + (input.checked ? 'включено' : 'выключено'), 'ok', '🛡️');
-        onChange && onChange(input.checked);
+        Store.biz(function (st) { st.shield[key] = next; });
+        toast(label + ': ' + (next ? 'включено' : 'выключено'), 'ok', '🛡️');
+        onChange && onChange(next);
+        refresh();
       });
-      input.checked = !!Store.get().shield[key];
     });
     return h('label', { class: 'switch' }, [
       h('span', { class: 'switch__text' }, [h('span', { class: 'strong', text: label }), h('span', { class: 'small muted', text: sub })]),

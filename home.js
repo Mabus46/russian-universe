@@ -38,6 +38,9 @@ function iconCard(icon, title, sub, route, chipText) {
   return node;
 }
 
+/* имена ассистентов в винительном падеже — для «Спросить …» */
+var ASSISTANT_ACC = { bogatyr: 'Богатыря', svetlana: 'Светлану', ilya: 'Илью Муромца' };
+
 Views.home = function () {
   var s = Store.get();
   var lvl = Store.levelInfo();
@@ -56,7 +59,7 @@ Views.home = function () {
     h('h1', { class: 'h1 mt-12', text: greet + ', ' + (s.name || 'друг') + '!' }),
     h('p', { class: 'lead mt-8', text: 'Сегодня в вашем дереве ' + s.contribution + ' очков вклада — это уровень «' + lvl.name + '». Ниже собрано то, что можно сделать прямо сейчас.' }),
     h('div', { class: 'row mt-16 row--wrap' }, [
-      goBtn('Спросить ' + assistant.name, 'assistant', 'btn--gold'),
+      goBtn('Спросить ' + (ASSISTANT_ACC[assistant.id] || 'ассистента'), 'assistant', 'btn--gold'),
       goBtn('Открыть слободы', 'slobody', 'btn--ghost'),
       goBtn('Продолжить обучение', 'edu', 'btn--ghost')
     ]),
