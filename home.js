@@ -57,7 +57,7 @@ Views.home = function () {
       chip('Офлайн · без сервера')
     ]),
     h('h1', { class: 'h1 mt-12', text: greet + ', ' + (s.name || 'друг') + '!' }),
-    h('p', { class: 'lead mt-8', text: 'Сегодня в вашем дереве ' + s.contribution + ' очков вклада — это уровень «' + lvl.name + '». Ниже собрано то, что можно сделать прямо сейчас.' }),
+    h('p', { class: 'lead mt-8', text: 'Сегодня в вашем дереве ' + s.contribution + ' ' + plural(s.contribution, ['очко', 'очка', 'очков']) + ' вклада — это уровень «' + lvl.name + '». Ниже собрано то, что можно сделать прямо сейчас.' }),
     h('div', { class: 'row mt-16 row--wrap' }, [
       goBtn('Спросить ' + (ASSISTANT_ACC[assistant.id] || 'ассистента'), 'assistant', 'btn--gold'),
       goBtn('Открыть слободы', 'slobody', 'btn--ghost'),
@@ -82,7 +82,7 @@ Views.home = function () {
         ]),
         h('div', {}, [
           h('div', { class: 'h3', text: lvl.icon + ' ' + lvl.name }),
-          h('div', { class: 'small muted', text: lvl.next ? ('до «' + lvl.next + '»: ' + lvl.toNext + ' очков вклада') : 'высший уровень демо-контура' })
+          h('div', { class: 'small muted', text: lvl.next ? ('до «' + lvl.next + '»: ' + lvl.toNext + ' ' + plural(lvl.toNext, ['очко', 'очка', 'очков']) + ' вклада') : 'высший уровень демо-контура' })
         ])
       ]),
       goBtn('Дерево жизни', 'tree', 'btn--ghost', true)

@@ -100,7 +100,7 @@ Views.market = function () {
       ]));
       card.appendChild(h('div', { class: 'chips mt-12' }, [
         chip('эко ' + p.eco, 'mint'),
-        chip(p.chain.length + ' шагов', 'azure')
+        chip(p.chain.length + ' ' + plural(p.chain.length, ['шаг', 'шага', 'шагов']), 'azure')
       ]));
       var actions = h('div', { class: 'row mt-12 row--wrap' });
       var openBtn = h('button', { class: 'btn btn--ghost btn--xs', type: 'button', text: 'Паспорт' });

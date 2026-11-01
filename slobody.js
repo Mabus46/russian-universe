@@ -65,7 +65,7 @@ Views.slobody = function () {
     ]));
     card.appendChild(h('div', { class: 'small muted mt-8', text: sl.spec }));
     card.appendChild(h('div', { class: 'chips mt-12' }, [
-      chip(sl.products.length + ' продукта', 'gold'),
+      chip(sl.products.length + ' ' + plural(sl.products.length, ['продукт', 'продукта', 'продуктов']), 'gold'),
       chip(sl.members + ' участников'),
       chip('uptime ' + sl.uptime + '%', 'azure')
     ]));
@@ -177,7 +177,7 @@ Views.slobodaDetail = function (id) {
       h('span', { class: 'list-row__ico', text: p.icon }),
       h('span', { class: 'list-row__main' }, [
         h('span', { class: 'list-row__title', text: p.name }),
-        h('span', { class: 'list-row__sub', text: p.chain.length + ' шагов в паспорте · ' + p.weight })
+        h('span', { class: 'list-row__sub', text: p.chain.length + ' ' + plural(p.chain.length, ['шаг', 'шага', 'шагов']) + ' в паспорте · ' + p.weight })
       ]),
       h('span', { class: 'list-row__side' }, [chip(p.price + ' Л', 'gold')])
     ]);

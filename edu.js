@@ -59,7 +59,7 @@ Views.edu = function () {
       h('div', { class: 'list-row__ico', style: { fontSize: '20px' }, text: t.icon }),
       h('div', { class: 'list-row__main' }, [
         h('div', { class: 'list-row__title', text: t.title }),
-        h('div', { class: 'list-row__sub', text: t.lessons.length + ' уроков · ' + pr.done + ' пройдено' })
+        h('div', { class: 'list-row__sub', text: t.lessons.length + ' ' + plural(t.lessons.length, ['урок', 'урока', 'уроков']) + ' · ' + pr.done + ' пройдено' })
       ])
     ]));
     card.appendChild(h('div', { class: 'chips mt-12' }, [ageChip(t)]));
@@ -74,7 +74,7 @@ Views.edu = function () {
     h('div', { class: 'row row--between row--wrap' }, [
       h('div', {}, [
         h('div', { class: 'h2', text: '🏅 ' + DEMO.olympiad.title }),
-        h('div', { class: 'small muted mt-4', text: DEMO.olympiad.status + ' · ' + DEMO.olympiad.tasks.length + ' заданий · диплом в демо-профиль' }),
+        h('div', { class: 'small muted mt-4', text: DEMO.olympiad.status + ' · ' + DEMO.olympiad.tasks.length + ' ' + plural(DEMO.olympiad.tasks.length, ['задание', 'задания', 'заданий']) + ' · диплом в демо-профиль' }),
         s.olympiadScore !== null ? h('div', { class: 'small mint mt-4', text: 'Ваш результат: ' + s.olympiadScore + ' из ' + DEMO.olympiad.tasks.length }) : null
       ]),
       goBtn(s.olympiadScore !== null ? 'Пройти заново' : 'Участвовать', 'olympiad', 'btn--gold')

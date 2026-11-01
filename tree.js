@@ -40,11 +40,11 @@ Views.tree = function () {
         h('div', { class: 'msg__ava', style: { width: '48px', height: '48px', fontSize: '22px' }, text: lvl.icon }),
         h('div', {}, [
           h('div', { class: 'h2', text: lvl.name }),
-          h('div', { class: 'small muted', text: 'уровень ' + lvl.n + ' из 6 · ' + s.contribution + ' очков вклада' })
+          h('div', { class: 'small muted', text: 'уровень ' + lvl.n + ' из 6 · ' + s.contribution + ' ' + plural(s.contribution, ['очко', 'очка', 'очков']) + ' вклада' })
         ])
       ]),
       progressBar(s.contribution, lvl.nextAt || Math.max(1, s.contribution), 'bar--gold'),
-      h('div', { class: 'small muted', text: lvl.next ? 'До уровня «' + lvl.next + '» нужно ещё ' + lvl.toNext + ' очков вклада.' : 'Это высший уровень демо-контура.' }),
+      h('div', { class: 'small muted', text: lvl.next ? 'До уровня «' + lvl.next + '» нужно ещё ' + lvl.toNext + ' ' + plural(lvl.toNext, ['очко', 'очка', 'очков']) + ' вклада.' : 'Это высший уровень демо-контура.' }),
       h('hr', { class: 'hr' }),
       h('div', { class: 'branch-legend' }, BRANCHES.map(function (b) {
         return h('span', { class: 'chip', style: { borderColor: b.color + '55', color: b.color } }, [
@@ -77,7 +77,7 @@ Views.tree = function () {
       h('div', { class: 'tl-body' }, [
         h('div', { class: 'row row--wrap' }, [
           h('span', { class: 'strong', text: 'Уровень ' + L.n + ' · ' + L.name }),
-          chip(L.min + ' очков вклада', passed ? 'gold' : 'mint'),
+          chip(L.min + ' ' + plural(L.min, ['очко', 'очка', 'очков']) + ' вклада', passed ? 'gold' : 'mint'),
           isNow ? chip('вы здесь', 'azure') : null
         ]),
         h('div', { class: 'small muted mt-4', text: L.text })
@@ -175,80 +175,102 @@ Views.tree = function () {
 
 /* ---------- SVG-дерево ---------- */
 function treeSvg(s) {
-  var svgNS = 'http://www.w3.org/2000/svg';
-  var svg = document.createElementNS(svgNS, 'svg');
-  svg.setAttribute('viewBox', '0 0 360 320');
-  svg.setAttribute('class', 'tree-svg');
-  svg.setAttribute('role', 'img');
-  svg.setAttribute('aria-label', 'Дерево вклада: пять ветвей, толщина зависит от очков вклада');
+  var NS = 'http://www.w3.org/2000/svg';
+  var W = 420, H = 384, baseX = 210, baseY = 344, forkY = 206;
 
-  var defs = document.createElementNS(svgNS, 'defs');
-  var grad = document.createElementNS(svgNS, 'linearGradient');
-  grad.setAttribute('id', 'trunk');
-  grad.setAttribute('x1', '0'); grad.setAttribute('y1', '1'); grad.setAttribute('x2', '0'); grad.setAttribute('y2', '0');
-  [['0', '#6b5124'], ['1', '#E8C05A']].forEach(function (st) {
-    var stop = document.createElementNS(svgNS, 'stop');
-    stop.setAttribute('offset', st[0]); stop.setAttribute('stop-color', st[1]);
-    grad.appendChild(stop);
+  function el(name, attrs) {
+    var n = document.createElementNS(NS, name);
+    for (var k in attrs) { if (attrs.hasOwnProperty(k)) n.setAttribute(k, String(attrs[k])); }
+    return n;
+  }
+
+  var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, class: 'tree-svg', role: 'img' });
+  svg.setAttribute('aria-label', 'Дерево вклада: пять ветвей, толщина и размер кроны зависят от очков вклада');
+
+  var defs = el('defs', {});
+  var grad = el('linearGradient', { id: 'trunkGrad', x1: '0', y1: '1', x2: '0', y2: '0' });
+  [['0', '#6a4f22'], ['0.55', '#a8813a'], ['1', '#E8C05A']].forEach(function (st) {
+    grad.appendChild(el('stop', { offset: st[0], 'stop-color': st[1] }));
   });
+  var glow = el('radialGradient', { id: 'canopyGlow' });
+  glow.appendChild(el('stop', { offset: '0', 'stop-color': '#E8C05A', 'stop-opacity': '.20' }));
+  glow.appendChild(el('stop', { offset: '1', 'stop-color': '#E8C05A', 'stop-opacity': '0' }));
   defs.appendChild(grad);
+  defs.appendChild(glow);
   svg.appendChild(defs);
 
-  var ground = document.createElementNS(svgNS, 'ellipse');
-  ground.setAttribute('cx', '180'); ground.setAttribute('cy', '300');
-  ground.setAttribute('rx', '96'); ground.setAttribute('ry', '10');
-  ground.setAttribute('fill', 'rgba(232,192,90,.12)');
-  svg.appendChild(ground);
+  /* мягкое свечение вокруг кроны */
+  svg.appendChild(el('ellipse', { cx: baseX, cy: 176, rx: 178, ry: 132, fill: 'url(#canopyGlow)' }));
 
-  var trunk = document.createElementNS(svgNS, 'path');
-  trunk.setAttribute('d', 'M180 300 C176 250 172 220 180 176');
-  trunk.setAttribute('stroke', 'url(#trunk)');
-  trunk.setAttribute('stroke-width', '10');
-  trunk.setAttribute('fill', 'none');
-  trunk.setAttribute('stroke-linecap', 'round');
+  /* земля */
+  svg.appendChild(el('ellipse', { cx: baseX, cy: baseY - 2, rx: 104, ry: 12, fill: 'rgba(232,192,90,.10)' }));
+  svg.appendChild(el('ellipse', { cx: baseX, cy: baseY - 2, rx: 62, ry: 7, fill: 'rgba(232,192,90,.10)' }));
+
+  /* ствол — сужающийся книзу книзу==кверху */
+  var trunk = el('path', {
+    d: 'M' + (baseX - 11) + ' ' + baseY +
+       ' C' + (baseX - 8) + ' ' + (baseY - 52) + ' ' + (baseX - 6) + ' ' + (forkY + 44) + ' ' + (baseX - 4) + ' ' + forkY +
+       ' L' + (baseX + 4) + ' ' + forkY +
+       ' C' + (baseX + 6) + ' ' + (forkY + 44) + ' ' + (baseX + 8) + ' ' + (baseY - 52) + ' ' + (baseX + 11) + ' ' + baseY + ' Z',
+    fill: 'url(#trunkGrad)'
+  });
   svg.appendChild(trunk);
+  svg.appendChild(el('circle', { cx: baseX, cy: forkY, r: 4, fill: '#E8C05A' }));
 
-  var maxB = Math.max.apply(null, BRANCHES.map(function (b) { return s.branch[b.key] || 0; }).concat([1]));
+  var maxV = Math.max.apply(null, BRANCHES.map(function (b) { return s.branch[b.key] || 0; }).concat([1]));
+
+  /* угол от вертикали (град), длина, точка ответвления по стволу */
   var geo = [
-    { x: 74, y: 118, cx: 62, cy: 96 },
-    { x: 122, y: 82, cx: 112, cy: 58 },
-    { x: 180, y: 62, cx: 180, cy: 36 },
-    { x: 238, y: 86, cx: 250, cy: 60 },
-    { x: 286, y: 126, cx: 300, cy: 104 }
+    { a: -66, len: 118, from: 0.30 },
+    { a: -34, len: 142, from: 0.62 },
+    { a: -4,  len: 154, from: 0.95 },
+    { a: 27,  len: 138, from: 0.66 },
+    { a: 57,  len: 112, from: 0.33 }
   ];
+
   BRANCHES.forEach(function (b, i) {
     var g = geo[i];
+    var rad = g.a * Math.PI / 180;
     var v = s.branch[b.key] || 0;
-    var w = 2 + (v / maxB) * 6;
-    var path = document.createElementNS(svgNS, 'path');
-    path.setAttribute('d', 'M180 176 Q' + ((180 + g.x) / 2) + ' ' + (g.y + 14) + ' ' + g.x + ' ' + g.y);
-    path.setAttribute('stroke', b.color);
-    path.setAttribute('stroke-width', String(w));
-    path.setAttribute('fill', 'none');
-    path.setAttribute('stroke-linecap', 'round');
-    path.setAttribute('opacity', '.85');
-    svg.appendChild(path);
+    var share = maxV > 0 ? v / maxV : 0;
+    var sx = baseX;
+    var sy = baseY - (baseY - forkY) * g.from;
+    var ex = sx + Math.sin(rad) * g.len;
+    var ey = sy - Math.cos(rad) * g.len;
+    var cx1 = sx + Math.sin(rad) * g.len * 0.45;
+    var cy1 = sy - Math.cos(rad) * g.len * 0.80;
 
-    var crown = document.createElementNS(svgNS, 'circle');
-    crown.setAttribute('cx', String(g.cx)); crown.setAttribute('cy', String(g.cy));
-    crown.setAttribute('r', String(8 + (v / maxB) * 16));
-    crown.setAttribute('fill', b.color);
-    crown.setAttribute('opacity', '.18');
-    svg.appendChild(crown);
+    /* ветвь */
+    svg.appendChild(el('path', {
+      d: 'M' + sx + ' ' + sy + ' Q' + cx1 + ' ' + cy1 + ' ' + ex + ' ' + ey,
+      stroke: b.color, 'stroke-width': (2.4 + share * 5.4).toFixed(1),
+      'stroke-linecap': 'round', fill: 'none', opacity: '.9'
+    }));
 
-    var dot = document.createElementNS(svgNS, 'circle');
-    dot.setAttribute('cx', String(g.cx)); dot.setAttribute('cy', String(g.cy));
-    dot.setAttribute('r', '4');
-    dot.setAttribute('fill', b.color);
-    svg.appendChild(dot);
+    /* крона: три перекрывающихся круга */
+    var r0 = 17 + share * 19;
+    [[0, 0, 1], [-r0 * 0.62, r0 * 0.30, 0.72], [r0 * 0.60, r0 * 0.34, 0.66]].forEach(function (o) {
+      svg.appendChild(el('circle', {
+        cx: (ex + o[0]).toFixed(1), cy: (ey + o[1]).toFixed(1), r: (r0 * o[2]).toFixed(1),
+        fill: b.color, opacity: '.16'
+      }));
+    });
+    svg.appendChild(el('circle', { cx: ex.toFixed(1), cy: ey.toFixed(1), r: '4.2', fill: b.color }));
 
-    var label = document.createElementNS(svgNS, 'text');
-    label.setAttribute('x', String(g.cx));
-    label.setAttribute('y', String(g.cy + 26));
-    label.setAttribute('text-anchor', 'middle');
-    label.setAttribute('font-size', '9.5');
-    label.setAttribute('fill', '#C9D6F5');
-    label.textContent = b.icon + ' ' + v;
+    /* подпись-плашка снаружи кроны */
+    var lx = baseX + Math.sin(rad) * (g.len + 24);
+    var ly = baseY - (baseY - forkY) * g.from - Math.cos(rad) * (g.len + 24);
+    var pw = 36, ph = 22;
+    var rect = el('rect', {
+      x: (lx - pw / 2).toFixed(1), y: (ly - ph / 2).toFixed(1), width: pw, height: ph,
+      rx: 11, fill: 'rgba(10,15,30,.9)', stroke: b.color, 'stroke-opacity': '.55', 'stroke-width': '1.2'
+    });
+    svg.appendChild(rect);
+    var label = el('text', {
+      x: lx.toFixed(1), y: (ly + 4.2).toFixed(1), 'text-anchor': 'middle',
+      'font-size': '11.5', 'fill': '#EAF0FF', 'font-weight': '700'
+    });
+    label.textContent = String(v);
     svg.appendChild(label);
   });
 

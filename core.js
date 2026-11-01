@@ -67,6 +67,15 @@ function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 
 function pct(a, b) { return b > 0 ? clamp(Math.round((a / b) * 100), 0, 100) : 0; }
 
+/* русская форма множественного числа: plural(3, ['очко','очка','очков']) -> 'очка' */
+function plural(n, forms) {
+  var a = Math.abs(n) % 100, b = a % 10;
+  if (a > 10 && a < 20) return forms[2];
+  if (b > 1 && b < 5) return forms[1];
+  if (b === 1) return forms[0];
+  return forms[2];
+}
+
 /* FNV-1a → base36 */
 function hashStr(str) {
   var h1 = 0x811c9dc5;

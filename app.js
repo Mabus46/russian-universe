@@ -465,11 +465,11 @@ function openProfile() {
       h('div', { class: 'msg__ava', style: { width: '52px', height: '52px', fontSize: '22px' }, text: lvl.icon }),
       h('div', {}, [
         h('div', { class: 'h3', text: s.name || 'Гость' }),
-        h('div', { class: 'small muted', text: 'Уровень ' + lvl.n + ' · ' + lvl.name + ' · ' + s.contribution + ' очков вклада' })
+        h('div', { class: 'small muted', text: 'Уровень ' + lvl.n + ' · ' + lvl.name + ' · ' + s.contribution + ' ' + plural(s.contribution, ['очко', 'очка', 'очков']) + ' вклада' })
       ])
     ]),
     progressBar(s.contribution, lvl.nextAt || s.contribution + 1, 'bar--gold'),
-    h('div', { class: 'small muted', text: lvl.next ? ('До уровня «' + lvl.next + '» — ' + lvl.toNext + ' очков вклада') : 'Максимальный уровень в демо-контуре' }),
+    h('div', { class: 'small muted', text: lvl.next ? ('До уровня «' + lvl.next + '» — ' + lvl.toNext + ' ' + plural(lvl.toNext, ['очко', 'очка', 'очков']) + ' вклада') : 'Максимальный уровень в демо-контуре' }),
 
     h('hr', { class: 'hr mt-16' }),
     kvRow('Режим профиля', s.mode === 'child' ? 'Детский (под контролем родителя)' : 'Взрослый'),

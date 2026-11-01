@@ -518,7 +518,7 @@ svg { display: block; }
 
 /* ---------- дерево жизни ---------- */
 .tree-wrap { position: relative; display: grid; place-items: center; }
-.tree-svg { width: 100%; max-width: 560px; height: auto; }
+.tree-svg { width: 100%; max-width: 620px; height: auto; }
 .branch-legend { display: flex; flex-wrap: wrap; gap: 8px; }
 
 /* ---------- обучение ---------- */
