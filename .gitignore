@@ -1,0 +1,21 @@
+# служебное
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# редакторы
+.vscode/
+.idea/
+*.swp
+*~
+
+# архивы и временные файлы поставки
+*.zip
+*.7z
+*.rar
+~$*
+
+# локальные серверы и логи
+.venv/
+node_modules/
+*.log
